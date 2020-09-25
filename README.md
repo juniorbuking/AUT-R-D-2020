@@ -1,5 +1,8 @@
-# Les Mills On Demand Gamification x AUT R&D 2020
+<img src='https://github.com/bosh-code/AUT-R-D-2020/blob/master/assets/LMxAUT_long.png'></img>
+#
 
+
+# LES MILLS On Demand Visual Gamification x AUT R&D 2020
 This repo contains the research and prototypes for the Les Mills On Demand (LMOD) Gamification project. This project was completed by the AUT Research and Development team 2020.
 
 ## Getting Started
@@ -78,4 +81,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Les Mills
+* LES MILLS
+* AUT
