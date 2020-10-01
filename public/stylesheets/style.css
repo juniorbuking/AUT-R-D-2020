@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+video, canvas {
+  display: block;
+  margin: 15px;
+  /* border: 2px solid red; */
+}
+
+#video {
+  /* WIDTH, HEIGHT NOT WORKING?? */
+  /* width: 600; */
+  /* height: 500; */
+  background-color: #666;
+  /* border: 2px solid green; */
+}
+
+#info {
+  display: none;
+}
