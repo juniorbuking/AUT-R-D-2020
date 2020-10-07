@@ -1,4 +1,5 @@
 import { drawBoundingBox, drawKeypoints, drawSkeleton } from "./util.js";
+import { instructor } from "./instructor.js";
 
 const videoWidth = 600;
 const videoHeight = 500;
@@ -14,17 +15,13 @@ const defaultMobileNetInputResolution = 500;
 // const defaultResNetInputResolution = 250;
 
 const model = {
-  algorithm: 'multi-pose',
+  algorithm: "multi-pose",
   input: {
-    architecture: 'MobileNetV1',
+    architecture: "MobileNetV1",
     outputStride: defaultMobileNetStride,
     inputResolution: defaultMobileNetInputResolution,
     multiplier: defaultMobileNetMultiplier,
-    quantBytes: defaultQuantBytes
-  },
-  singlePoseDetection: {
-    minPoseConfidence: 0.1,
-    minPartConfidence: 0.5,
+    quantBytes: defaultQuantBytes,
   },
   multiPoseDetection: {
     maxPoseDetections: 5,
@@ -42,71 +39,70 @@ const model = {
 };
 
 function detectPoses(video) {
-
-  const canvas = document.getElementById('output');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.getElementById("output");
+  const ctx = canvas.getContext("2d");
   canvas.width = videoWidth;
   canvas.height = videoHeight;
 
   function frameProcessing() {
+    model.net
+      .estimateMultiplePoses(video, {
+        flipHorizontal: false,
+        maxDetections: model.multiPoseDetection.maxPoseDetections,
+        scoreThreshold: model.multiPoseDetection.minPartConfidence,
+        nmsRadius: model.multiPoseDetection.nmsRadius,
+      })
+      .then((multiPoses) => {
+        const minPoseConfidence = +model.multiPoseDetection.minPoseConfidence;
+        const minPartConfidence = +model.multiPoseDetection.minPartConfidence;
 
-    model.net.estimateMultiplePoses(video, {
-      flipHorizontal: false,
-      maxDetections: model.multiPoseDetection.maxPoseDetections,
-      scoreThreshold: model.multiPoseDetection.minPartConfidence,
-      nmsRadius: model.multiPoseDetection.nmsRadius
-    }).then((multiPoses) => {
+        ctx.clearRect(0, 0, videoWidth, videoHeight);
 
-      const minPoseConfidence = +model.multiPoseDetection.minPoseConfidence;
-      const minPartConfidence = +model.multiPoseDetection.minPartConfidence;
-
-      ctx.clearRect(0, 0, videoWidth, videoHeight);
-
-      if (model.output.showVideo) {
-        ctx.save();
-        // ctx.scale(-1, 1);
-        // ctx.translate(-videoWidth, 0);
-        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
-        ctx.restore();
-      }
-
-      console.log(multiPoses);
-
-      multiPoses.forEach(({score, keypoints}) => {
-        if (score >= minPoseConfidence) {
-          if (model.output.showKeyPoints) {
-            // console.log("drawkeypoints");
-            drawKeypoints(keypoints, minPartConfidence, ctx);
-          }
-  
-          if (model.output.showSkeleton) {
-            // console.log("drawskeleton");
-            drawSkeleton(keypoints, minPartConfidence, ctx);
-          }
-  
-          if (model.output.showBoundingBox) {
-            // console.log("drawkeyBoundingbox");
-            drawBoundingBox(keypoints, ctx);
-          }
+        if (model.output.showVideo) {
+          ctx.save();
+          // ctx.scale(-1, 1);
+          // ctx.translate(-videoWidth, 0);
+          ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+          ctx.restore();
         }
+
+        console.log(multiPoses);
+
+        multiPoses.forEach(({ score, keypoints }) => {
+          if (score >= minPoseConfidence) {
+            if (model.output.showKeyPoints) {
+              // console.log("drawkeypoints");
+              drawKeypoints(keypoints, minPartConfidence, ctx);
+            }
+
+            if (model.output.showSkeleton) {
+              // console.log("drawskeleton");
+              drawSkeleton(keypoints, minPartConfidence, ctx);
+            }
+
+            if (model.output.showBoundingBox) {
+              // console.log("drawkeyBoundingbox");
+              drawBoundingBox(keypoints, ctx);
+            }
+          }
+        });
+
+        requestAnimationFrame(frameProcessing);
       });
-  
-      requestAnimationFrame(frameProcessing);
-    })
   }
 
   requestAnimationFrame(frameProcessing);
 }
 
 function loadVideo() {
-
   const video = document.getElementById("video");
   video.width = videoWidth;
   video.height = videoHeight;
 
   return Promise.resolve(
     // Not adding `{ audio: true }` since we only want video now
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
       .then((stream) => {
         video.srcObject = stream;
         return video;
@@ -126,26 +122,27 @@ function loadVideo() {
 }
 
 (async () => {
+  console.log(instructor);
 
   const net = await posenet.load({
     architecture: model.input.architecture,
     outputStride: model.input.outputStride,
     inputResolution: model.input.inputResolution,
     multiplier: model.input.multiplier,
-    quantBytes: model.input.quantBytes
+    quantBytes: model.input.quantBytes,
   });
 
   loadVideo()
-    .then(video => {
+    .then((video) => {
       model.net = net;
       detectPoses(video);
     })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
 
-      const info = document.getElementById('info');
-      info.textContent = 'this browser does not support video capture, or this device does not have a camera';
-      info.style.display = 'block';
+      const info = document.getElementById("info");
+      info.textContent =
+        "this browser does not support video capture, or this device does not have a camera";
+      info.style.display = "block";
     });
-
-})()
+})();
