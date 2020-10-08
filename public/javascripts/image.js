@@ -3,7 +3,7 @@ import {
   drawKeypoints,
   drawSkeleton,
   renderImageToCanvas,
-  setColour,
+  toggleInstructor,
 } from "./util.js";
 import { instructor } from "./instructor.js";
 
@@ -104,18 +104,20 @@ posenet
       canvas
     );
 
+    // draw instructor
+    toggleInstructor(true);
     drawResults(
       canvas,
-      poses,
+      instructor,
       model.multiPoseDetection.minPartConfidence,
       model.multiPoseDetection.minPoseConfidence
     );
 
-    // draw instructor
-    setColour("green");
+    // draw student
+    toggleInstructor(false);
     drawResults(
       canvas,
-      instructor,
+      poses,
       model.multiPoseDetection.minPartConfidence,
       model.multiPoseDetection.minPoseConfidence
     );

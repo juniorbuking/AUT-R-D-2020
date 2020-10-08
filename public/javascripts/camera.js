@@ -1,4 +1,9 @@
-import { drawBoundingBox, drawKeypoints, drawSkeleton } from "./util.js";
+import {
+  drawBoundingBox,
+  drawKeypoints,
+  drawSkeleton,
+  toggleInstructor,
+} from "./util.js";
 import { instructor } from "./instructor.js";
 
 const videoWidth = 600;
@@ -66,8 +71,22 @@ function detectPoses(video) {
           ctx.restore();
         }
 
-        console.log(multiPoses);
+        // console.log(multiPoses);
 
+        // draw instructor
+        toggleInstructor(true);
+        if (instructor[0].score >= minPoseConfidence) {
+          if (model.output.showSkeleton) {
+            drawSkeleton(
+              instructor[0].keypoints,
+              model.multiPoseDetection.minPartConfidence,
+              ctx
+            );
+          }
+        }
+
+        // draw student
+        toggleInstructor(false);
         multiPoses.forEach(({ score, keypoints }) => {
           if (score >= minPoseConfidence) {
             if (model.output.showKeyPoints) {
@@ -122,8 +141,6 @@ function loadVideo() {
 }
 
 (async () => {
-  console.log(instructor);
-
   const net = await posenet.load({
     architecture: model.input.architecture,
     outputStride: model.input.outputStride,
