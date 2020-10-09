@@ -13,6 +13,16 @@ video, canvas {
   /* border: 2px solid red; */
 }
 
+#image, #output {
+  /* width: 384px; */
+  /* height: 512px; */
+  width: 600px;
+  height: 500px;
+  margin: 15px;
+  /* object-fit: scale-down; */
+  /* border: 2px solid red; */
+}
+
 #video {
   /* WIDTH, HEIGHT NOT WORKING?? */
   /* width: 600; */

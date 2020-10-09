@@ -1,4 +1,11 @@
-import { drawBoundingBox, drawKeypoints, drawSkeleton, renderImageToCanvas } from "./util.js";
+import {
+  drawBoundingBox,
+  drawKeypoints,
+  drawSkeleton,
+  renderImageToCanvas,
+  toggleInstructor,
+} from "./util.js";
+import { instructor } from "./instructor.js";
 
 const defaultQuantBytes = 2;
 
@@ -14,17 +21,13 @@ const defaultResNetInputResolution = 250;
  * Mobilenet Model
  */
 const model = {
-  algorithm: 'multi-pose',
+  algorithm: "multi-pose",
   input: {
-    architecture: 'MobileNetV1',
+    architecture: "MobileNetV1",
     outputStride: defaultMobileNetStride,
     inputResolution: defaultMobileNetInputResolution,
     multiplier: defaultMobileNetMultiplier,
-    quantBytes: defaultQuantBytes
-  },
-  singlePoseDetection: {
-    minPoseConfidence: 0.1,
-    minPartConfidence: 0.5,
+    quantBytes: defaultQuantBytes,
   },
   multiPoseDetection: {
     maxPoseDetections: 5,
@@ -72,33 +75,56 @@ const model = {
 //   net: null,
 // };
 
-const imageElement = document.getElementById('image');
+const imageElement = document.getElementById("image");
 
-posenet.load({
-  architecture: model.input.architecture,
-  outputStride: model.input.outputStride,
-  inputResolution: model.input.inputResolution,
-  multiplier: model.input.multiplier,
-  quantBytes: model.input.quantBytes
-}).then(function(net) {
-  const poses = net.estimateMultiplePoses(imageElement, {
-    flipHorizontal: false,
-    maxDetections: model.multiPoseDetection.maxPoseDetections,
-    scoreThreshold: model.multiPoseDetection.minPartConfidence,
-    nmsRadius: model.multiPoseDetection.nmsRadius
+posenet
+  .load({
+    architecture: model.input.architecture,
+    outputStride: model.input.outputStride,
+    inputResolution: model.input.inputResolution,
+    multiplier: model.input.multiplier,
+    quantBytes: model.input.quantBytes,
+  })
+  .then(function (net) {
+    const poses = net.estimateMultiplePoses(imageElement, {
+      flipHorizontal: false,
+      maxDetections: model.multiPoseDetection.maxPoseDetections,
+      scoreThreshold: model.multiPoseDetection.minPartConfidence,
+      nmsRadius: model.multiPoseDetection.nmsRadius,
+    });
+    return poses;
+  })
+  .then(function (poses) {
+    console.log(poses);
+    const canvas = document.getElementById("output");
+
+    renderImageToCanvas(
+      imageElement,
+      [imageElement.width, imageElement.height],
+      canvas
+    );
+
+    // draw instructor
+    toggleInstructor(true);
+    drawResults(
+      canvas,
+      instructor,
+      model.multiPoseDetection.minPartConfidence,
+      model.multiPoseDetection.minPoseConfidence
+    );
+
+    // draw student
+    toggleInstructor(false);
+    drawResults(
+      canvas,
+      poses,
+      model.multiPoseDetection.minPartConfidence,
+      model.multiPoseDetection.minPoseConfidence
+    );
   });
-  return poses;
-}).then(function(poses) {
-  console.log(poses);
-  const canvas = document.getElementById('output');
-  drawResults(
-      canvas, poses, model.multiPoseDetection.minPartConfidence,
-      model.multiPoseDetection.minPoseConfidence);
-})
 
 function drawResults(canvas, poses, minPartConfidence, minPoseConfidence) {
-  renderImageToCanvas(imageElement, [imageElement.width, imageElement.height], canvas);
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   poses.forEach((pose) => {
     // console.log(pose)
     if (pose.score >= minPoseConfidence) {
