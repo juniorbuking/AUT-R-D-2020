@@ -176,8 +176,8 @@ function extractFrame(cvs) {
 
   // context.clearRect(0, 0, videoWidth, videoHeight);
   // context.save();
-  // context.scale(-1, 1);
-  // context.translate(-videoWidth, 0);
+  context.scale(-1, 1);
+  context.translate(w, 0);
   context.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
   // context.restore();
 
