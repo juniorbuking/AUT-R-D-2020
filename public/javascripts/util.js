@@ -76,7 +76,7 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
       // console.log(key1, angle);
 
-      if (angle > 5) {
+      if (angle > 8) {
         setColour("OrangeRed");
       } else {
         setColour("Yellow");
