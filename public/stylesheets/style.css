@@ -10,6 +10,9 @@ body {
 video, canvas {
   display: block;
   margin: 15px;
+  transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
   /* border: 2px solid red; */
 }
 
@@ -29,9 +32,19 @@ video, canvas {
   /* height: 500; */
   background-color: #666;
   display:none !important;
+  transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
   /* border: 2px solid green; */
-}
+} 
 
 #info {
   display: none;
 }
+
+#script {
+  transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
+}
+
