@@ -196,20 +196,51 @@ export function drawStudent(
   poses.forEach((pose) => {
     // console.log(pose)
     if (pose.score >= minPoseConfidence) {
-      if (showKeypoint) {
-        // console.log("drawkeypoints");
-        drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-      }
+      if (findPoints(pose.keypoints)) {
+        drawText(
+          "Position the camera or move backwards until the camera covers the whole body.",
+          ctx
+        );
+      } else {
+        if (showKeypoint) {
+          // console.log("drawkeypoints");
+          drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+        }
 
-      if (showSkeleton) {
-        // console.log("drawskeleton");
-        drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-      }
+        if (showSkeleton) {
+          // console.log("drawskeleton");
+          drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+        }
 
-      if (showBoundingBox) {
-        // console.log("drawkeyBoundingbox");
-        drawBoundingBox(pose.keypoints, ctx);
+        if (showBoundingBox) {
+          // console.log("drawkeyBoundingbox");
+          drawBoundingBox(pose.keypoints, ctx);
+        }
       }
     }
   });
+}
+
+function findPoints(keypoints) {
+  return keypoints.some((el) => el.score <= 0.02);
+}
+
+function drawText(text, ctxx) {
+  // const canvas = document.createElement("canvas");
+  // canvas.width = 440;
+  // canvas.height = 80;
+
+  // const ctx = canvas.getContext("2d");
+  // ctx.fillStyle = "rgba(240, 128, 128, 0.4)";
+  // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // setColour("MidnightBlue");
+  // ctx.fillStyle = colour;
+  // ctx.font = "30px Lucida Grande";
+  // ctx.fillText(text, 10, 40);
+
+  // ctxx.drawImage(canvas, 20, 40);
+  const message = document.getElementById("message");
+  message.innerText = text;
+  message.style.display = "block";
 }

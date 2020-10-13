@@ -43,6 +43,7 @@ function detectPoses(video, instructorCanvas) {
   const ctx = canvas.getContext("2d");
   canvas.width = videoWidth;
   canvas.height = videoHeight;
+  canvas.style.display = "block";
 
   function frameProcessing() {
     model.net
@@ -151,7 +152,7 @@ function loadVideo() {
 
       const info = document.getElementById("info");
       info.textContent =
-        "this browser does not support video capture, or this device does not have a camera";
+        "Require permission to use the camera or camera is not supported on this device.";
       info.style.display = "block";
     });
 })();
