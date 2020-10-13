@@ -1,7 +1,12 @@
-import { drawBoundingBox, drawKeypoints, drawSkeleton } from "./util.js";
+import { 
+  drawBoundingBox, 
+  drawKeypoints, 
+  drawSkeleton,
+  toggleInstructor
+} from "./util.js";
 
-// const videoWidth = 600;
-// const videoHeight = 500;
+const videoWidth = 600;
+const videoHeight = 500;
 
 const defaultQuantBytes = 2;
 
@@ -69,8 +74,8 @@ const model = {
 //   net: null,
 // };
 
-function detectPoses() {
-  const canvas = document.getElementById('output');
+function detectPoses(instructor, videoElement) {
+  const canvas = document.getElementById('outputCamera');
   const ctx = canvas.getContext('2d');
   canvas.width = videoWidth;
   canvas.height = videoHeight;
@@ -81,7 +86,7 @@ function detectPoses() {
   poseCanvas.height = videoHeight;
 
   function frameProcessing() {
-    const video = extractFrame(poseCanvas);
+    const video = extractFrame(poseCanvas, videoElement);
 
     model.net.estimateMultiplePoses(video, {
       flipHorizontal: false,
@@ -105,6 +110,21 @@ function detectPoses() {
 
       // console.log(multiPoses);
 
+      // draw instructor
+      toggleInstructor(true);
+      if (instructor.score >= minPoseConfidence) {
+        if (model.output.showSkeleton) {
+          drawSkeleton(
+            instructor,
+            instructor.keypoints,
+            model.multiPoseDetection.minPartConfidence,
+            ctx
+          );
+        }
+      }
+
+      // draw student
+      toggleInstructor(false);
       multiPoses.forEach(({score, keypoints}) => {
         if (score >= minPoseConfidence) {
           if (model.output.showKeyPoints) {
@@ -114,7 +134,7 @@ function detectPoses() {
   
           if (model.output.showSkeleton) {
             // console.log("drawskeleton");
-            drawSkeleton(keypoints, minPartConfidence, ctx);
+            drawSkeleton(instructor, keypoints, minPartConfidence, ctx);
           }
   
           if (model.output.showBoundingBox) {
@@ -124,7 +144,7 @@ function detectPoses() {
         }
       });
   
-      videoID = requestAnimationFrame(frameProcessing);
+      var videoID = requestAnimationFrame(frameProcessing);
   
       if (videoElement.paused) {
         cancelAnimationFrame(videoID);
@@ -135,30 +155,38 @@ function detectPoses() {
   requestAnimationFrame(frameProcessing);
 }
 
-var videoID;
-const videoElement = document.getElementById("video");
-const videoControl = document.getElementById("control");
-const videoWidth = videoElement.width || 640;
-const videoHeight = videoElement.height || 360;
 
+export class video{
+  constructor() { }
 
-videoControl.onclick = async () => {
+  async loadVideo(instructorModel) {
+    const videoElement = document.getElementById("video");
+    const videoControl = document.getElementById("control");
+    const videoWidth = videoElement.width || 640;
+    const videoHeight = videoElement.height || 360;
   
-  if (videoElement.paused) {
-    const net = await posenet.load({
-      architecture: model.input.architecture,
-      outputStride: model.input.outputStride,
-      inputResolution: model.input.inputResolution,
-      multiplier: model.input.multiplier,
-      quantBytes: model.input.quantBytes
-    });
-    model.net = net;
-    videoElement.play();
-    detectPoses();
-  }
-  else {
-    videoElement.pause();
-  }
+    if (videoElement.paused) {
+      const net = await posenet.load({
+        architecture: model.input.architecture,
+        outputStride: model.input.outputStride,
+        inputResolution: model.input.inputResolution,
+        multiplier: model.input.multiplier,
+        quantBytes: model.input.quantBytes
+      });
+      model.net = net;
+
+      // So that an error does not show due to Google Autoplay Policies
+      var promise = videoElement.play();
+      if (promise !== undefined) {
+        promise.then(_ => { }).catch(error => { });
+      }
+
+      detectPoses(instructorModel, videoElement);
+    }
+    else {
+      videoElement.pause();
+    }
+  };
 }
 
 // Both return 0?
@@ -170,14 +198,14 @@ videoControl.onclick = async () => {
 //   console.log(videoElement.height);
 // }
 
-function extractFrame(cvs) {     
+function extractFrame(cvs, videoElement) {     
   // const cvs = document.createElement('canvas');
   const context = cvs.getContext('2d');
 
   // context.clearRect(0, 0, videoWidth, videoHeight);
   // context.save();
-  context.scale(-1, 1);
-  context.translate(w, 0);
+  //context.scale(-1, 1);
+  //context.translate(w, 0);
   context.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
   // context.restore();
 
