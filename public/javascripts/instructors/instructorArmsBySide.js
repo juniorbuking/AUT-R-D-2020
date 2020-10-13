@@ -123,9 +123,6 @@ var instructorArmsOut = new Instructor(
 function runModelOnCamera() {
     var cameraInstructor = new camera();
     cameraInstructor.loadPosenet(instructorArmsOut);
-
-    var videoAnalysis = new video();
-    videoAnalysis.loadVideo(instructorArmsOut);
 }
   
 // Run the function

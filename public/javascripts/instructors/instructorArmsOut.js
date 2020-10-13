@@ -122,9 +122,6 @@ var instructorArmsOut = new Instructor(
 function runModelOnCamera() {
   var cameraInstructor = new camera();
   cameraInstructor.loadPosenet(instructorArmsOut);
-
-  var videoAnalysis = new video();
-  videoAnalysis.loadVideo(instructorArmsOut);
 }
 
 // Written so that the script calls the function
