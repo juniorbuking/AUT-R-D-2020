@@ -1,5 +1,6 @@
 import {
   drawBoundingBox,
+  drawInstructor,
   drawKeypoints,
   drawSkeleton,
   renderImageToCanvas,
@@ -76,6 +77,14 @@ const model = {
 // };
 
 const imageElement = document.getElementById("image");
+const scale = 3;
+const instructorIndex = 2;
+const instructorCanvas = drawInstructor(
+  instructor[instructorIndex].keypoints,
+  model.multiPoseDetection.minPartConfidence,
+  [imageElement.width / scale, imageElement.height / scale],
+  1 / scale
+);
 
 posenet
   .load({
@@ -87,7 +96,7 @@ posenet
   })
   .then(function (net) {
     const poses = net.estimateMultiplePoses(imageElement, {
-      flipHorizontal: false,
+      flipHorizontal: true,
       maxDetections: model.multiPoseDetection.maxPoseDetections,
       scoreThreshold: model.multiPoseDetection.minPartConfidence,
       nmsRadius: model.multiPoseDetection.nmsRadius,
@@ -97,20 +106,22 @@ posenet
   .then(function (poses) {
     console.log(poses);
     const canvas = document.getElementById("output");
+    canvas.width = imageElement.width;
+    canvas.height = imageElement.height;
 
     renderImageToCanvas(
       imageElement,
-      [imageElement.width, imageElement.height],
-      canvas
+      canvas,
+      [0, 0],
+      [imageElement.width, imageElement.height]
     );
 
     // draw instructor
-    toggleInstructor(true);
-    drawResults(
+    renderImageToCanvas(
+      instructorCanvas,
       canvas,
-      instructor,
-      model.multiPoseDetection.minPartConfidence,
-      model.multiPoseDetection.minPoseConfidence
+      [10, -40],
+      [instructorCanvas.width, instructorCanvas.height]
     );
 
     // draw student

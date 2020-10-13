@@ -4,6 +4,8 @@ let isInstructor = true;
 let colour = "aqua";
 const boundingBoxColor = "red";
 const lineWidth = 3;
+const lineCap = "round";
+const pose = 2;
 
 function setColour(c) {
   colour = c;
@@ -45,6 +47,7 @@ export function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
   ctx.lineTo(bx * scale, by * scale);
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = color;
+  ctx.lineCap = lineCap;
   ctx.stroke();
 }
 
@@ -67,7 +70,7 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       const key1 = `${keypoints[0].part}_${keypoints[1].part}`;
       const key2 = `${keypoints[1].part}_${keypoints[0].part}`;
       const instructorSlope =
-        instructor[0].slope[key1] || instructor[0].slope[key2];
+        instructor[pose].slope[key1] || instructor[pose].slope[key2];
       const studentSlope = calculateSlope(
         toTuple(keypoints[0].position),
         toTuple(keypoints[1].position)
@@ -76,7 +79,7 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
       // console.log(key1, angle);
 
-      if (angle > 5) {
+      if (angle > 10) {
         setColour("OrangeRed");
       } else {
         setColour("Yellow");
@@ -144,10 +147,33 @@ export function drawBoundingBox(keypoints, ctx) {
 /**
  * Draw an image on a canvas
  */
-export function renderImageToCanvas(image, size, canvas) {
-  canvas.width = size[0];
-  canvas.height = size[1];
+export function renderImageToCanvas(image, canvas, [x, y], [width, height]) {
+  // canvas.width = size[0];
+  // canvas.height = size[1];
   const ctx = canvas.getContext("2d");
+  ctx.drawImage(image, x, y, width, height);
+}
 
-  ctx.drawImage(image, 0, 0, size[0], size[1]);
+/**
+ * Draw an instructor pose on a canvas
+ */
+export function drawInstructor(
+  keypoints,
+  minConfidence,
+  [width, height],
+  scale = 1
+) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+  ctx.fillRect(0, 50, width, height);
+
+  toggleInstructor(true);
+  drawKeypoints(keypoints, minConfidence, ctx, scale);
+  drawSkeleton(keypoints, minConfidence, ctx, scale);
+
+  return canvas;
 }

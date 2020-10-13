@@ -3,11 +3,13 @@ import {
   drawKeypoints,
   drawSkeleton,
   toggleInstructor,
+  drawInstructor,
+  renderImageToCanvas,
 } from "./util.js";
 import { instructor } from "./instructor.js";
 
-const videoWidth = 600;
-const videoHeight = 500;
+const videoWidth = 480;
+const videoHeight = 853;
 
 const defaultQuantBytes = 2;
 
@@ -43,7 +45,7 @@ const model = {
   net: null,
 };
 
-function detectPoses(video) {
+function detectPoses(video, instructorCanvas) {
   const canvas = document.getElementById("output");
   const ctx = canvas.getContext("2d");
   canvas.width = videoWidth;
@@ -52,7 +54,7 @@ function detectPoses(video) {
   function frameProcessing() {
     model.net
       .estimateMultiplePoses(video, {
-        flipHorizontal: false,
+        flipHorizontal: true,
         maxDetections: model.multiPoseDetection.maxPoseDetections,
         scoreThreshold: model.multiPoseDetection.minPartConfidence,
         nmsRadius: model.multiPoseDetection.nmsRadius,
@@ -65,8 +67,8 @@ function detectPoses(video) {
 
         if (model.output.showVideo) {
           ctx.save();
-          // ctx.scale(-1, 1);
-          // ctx.translate(-videoWidth, 0);
+          ctx.scale(-1, 1);
+          ctx.translate(-videoWidth, 0);
           ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
           ctx.restore();
         }
@@ -74,16 +76,12 @@ function detectPoses(video) {
         // console.log(multiPoses);
 
         // draw instructor
-        toggleInstructor(true);
-        if (instructor[0].score >= minPoseConfidence) {
-          if (model.output.showSkeleton) {
-            drawSkeleton(
-              instructor[0].keypoints,
-              model.multiPoseDetection.minPartConfidence,
-              ctx
-            );
-          }
-        }
+        renderImageToCanvas(
+          instructorCanvas,
+          canvas,
+          [20, 590],
+          [instructorCanvas.width, instructorCanvas.height]
+        );
 
         // draw student
         toggleInstructor(false);
@@ -129,6 +127,8 @@ function loadVideo() {
       .then((video) => {
         return new Promise((resolve) => {
           video.onloadedmetadata = () => {
+            // console.log("w", video.width);
+            // console.log("h", video.height);
             resolve(video);
           };
         });
@@ -141,6 +141,15 @@ function loadVideo() {
 }
 
 (async () => {
+  const scale = 3.5;
+  const pose = 2;
+  const instructorCanvas = drawInstructor(
+    instructor[pose].keypoints,
+    model.multiPoseDetection.minPartConfidence,
+    [videoWidth / scale, videoHeight / scale],
+    1 / scale
+  );
+
   const net = await posenet.load({
     architecture: model.input.architecture,
     outputStride: model.input.outputStride,
@@ -152,7 +161,7 @@ function loadVideo() {
   loadVideo()
     .then((video) => {
       model.net = net;
-      detectPoses(video);
+      detectPoses(video, instructorCanvas);
     })
     .catch((e) => {
       console.log(e);
