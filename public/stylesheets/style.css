@@ -33,18 +33,11 @@ video, canvas {
   background-color: #666;
   display:none !important;
   transform: rotateY(180deg);
-    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-    -moz-transform:rotateY(180deg); /* Firefox */
+    -webkit-transform:rotateY(180deg); /* For Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* For Firefox */
   /* border: 2px solid green; */
 } 
 
 #info {
   display: none;
 }
-
-#script {
-  transform: rotateY(180deg);
-    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-    -moz-transform:rotateY(180deg); /* Firefox */
-}
-
