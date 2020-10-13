@@ -177,3 +177,39 @@ export function drawInstructor(
 
   return canvas;
 }
+
+/**
+ * Draw a student pose on a canvas
+ */
+export function drawStudent(
+  canvas,
+  poses,
+  minPartConfidence,
+  minPoseConfidence,
+  showKeypoint,
+  showSkeleton,
+  showBoundingBox
+) {
+  const ctx = canvas.getContext("2d");
+
+  toggleInstructor(false);
+  poses.forEach((pose) => {
+    // console.log(pose)
+    if (pose.score >= minPoseConfidence) {
+      if (showKeypoint) {
+        // console.log("drawkeypoints");
+        drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+      }
+
+      if (showSkeleton) {
+        // console.log("drawskeleton");
+        drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+      }
+
+      if (showBoundingBox) {
+        // console.log("drawkeyBoundingbox");
+        drawBoundingBox(pose.keypoints, ctx);
+      }
+    }
+  });
+}

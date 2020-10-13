@@ -1,11 +1,4 @@
-import {
-  drawBoundingBox,
-  drawKeypoints,
-  drawSkeleton,
-  toggleInstructor,
-  drawInstructor,
-  renderImageToCanvas,
-} from "./util.js";
+import { drawInstructor, renderImageToCanvas, drawStudent } from "./util.js";
 import { instructor } from "./instructor.js";
 
 const videoWidth = 480;
@@ -84,25 +77,15 @@ function detectPoses(video, instructorCanvas) {
         );
 
         // draw student
-        toggleInstructor(false);
-        multiPoses.forEach(({ score, keypoints }) => {
-          if (score >= minPoseConfidence) {
-            if (model.output.showKeyPoints) {
-              // console.log("drawkeypoints");
-              drawKeypoints(keypoints, minPartConfidence, ctx);
-            }
-
-            if (model.output.showSkeleton) {
-              // console.log("drawskeleton");
-              drawSkeleton(keypoints, minPartConfidence, ctx);
-            }
-
-            if (model.output.showBoundingBox) {
-              // console.log("drawkeyBoundingbox");
-              drawBoundingBox(keypoints, ctx);
-            }
-          }
-        });
+        drawStudent(
+          canvas,
+          multiPoses,
+          minPartConfidence,
+          minPoseConfidence,
+          model.output.showKeyPoints,
+          model.output.showSkeleton,
+          model.output.showBoundingBox
+        );
 
         requestAnimationFrame(frameProcessing);
       });

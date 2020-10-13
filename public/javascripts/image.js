@@ -1,11 +1,4 @@
-import {
-  drawBoundingBox,
-  drawInstructor,
-  drawKeypoints,
-  drawSkeleton,
-  renderImageToCanvas,
-  toggleInstructor,
-} from "./util.js";
+import { drawInstructor, renderImageToCanvas, drawStudent } from "./util.js";
 import { instructor } from "./instructor.js";
 
 const defaultQuantBytes = 2;
@@ -77,10 +70,11 @@ const model = {
 // };
 
 const imageElement = document.getElementById("image");
-const scale = 3;
-const instructorIndex = 2;
+// draw instructor
+const scale = 3.5;
+const pose = 2;
 const instructorCanvas = drawInstructor(
-  instructor[instructorIndex].keypoints,
+  instructor[pose].keypoints,
   model.multiPoseDetection.minPartConfidence,
   [imageElement.width / scale, imageElement.height / scale],
   1 / scale
@@ -120,39 +114,18 @@ posenet
     renderImageToCanvas(
       instructorCanvas,
       canvas,
-      [10, -40],
+      [20, 590],
       [instructorCanvas.width, instructorCanvas.height]
     );
 
     // draw student
-    toggleInstructor(false);
-    drawResults(
+    drawStudent(
       canvas,
       poses,
       model.multiPoseDetection.minPartConfidence,
-      model.multiPoseDetection.minPoseConfidence
+      model.multiPoseDetection.minPoseConfidence,
+      model.output.showKeypoint,
+      model.output.showSkeleton,
+      model.output.showBoundingBox
     );
   });
-
-function drawResults(canvas, poses, minPartConfidence, minPoseConfidence) {
-  const ctx = canvas.getContext("2d");
-  poses.forEach((pose) => {
-    // console.log(pose)
-    if (pose.score >= minPoseConfidence) {
-      if (model.output.showKeypoint) {
-        // console.log("drawkeypoints");
-        drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-      }
-
-      if (model.output.showSkeleton) {
-        // console.log("drawskeleton");
-        drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-      }
-
-      if (model.output.showBoundingBox) {
-        // console.log("drawkeyBoundingbox");
-        drawBoundingBox(pose.keypoints, ctx);
-      }
-    }
-  });
-}
