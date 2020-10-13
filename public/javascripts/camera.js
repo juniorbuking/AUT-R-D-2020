@@ -10,16 +10,19 @@ const videoHeight = 500;
 
 const defaultQuantBytes = 2;
 
+// Constants needed for MobileNet
 const defaultMobileNetMultiplier = 0.75; // lower for mobile
 const defaultMobileNetStride = 16; 
 const defaultMobileNetInputResolution = 500;
 
+// Constants needed for ResNet
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
 // const defaultResNetInputResolution = 250;
 
 /**
- * 
+ * Mobilenet Model
+ * Faster, less accurate pose estimation library
  */
 const model = {
   algorithm: "multi-pose",
@@ -45,15 +48,21 @@ const model = {
   net: null,
 };
 
+/**
+ * The camera class which can be exported for use on the instructor scripts
+ */
 export class camera{
   constructor() { }
 
   /**
-   * 
-   * @param {*} instructor 
-   * @param {*} video 
+   * Function that detects the poses of the instructor model and the user
+   * @param {*} instructor an instructor object used for comparison with the
+   *                       user model
+   * @param {*} video a video object as this needs to be referneced in the 
+   *                  function
    */
   detectPoses(instructor, video) {    
+    // Set up canvas
     const canvas = document.getElementById("outputCamera");
     const ctx = canvas.getContext("2d");
     canvas.width = videoWidth;
@@ -121,7 +130,7 @@ export class camera{
   }
   
   /**
-   * 
+   * Loads up a video object based on the webcam canvas
    */
   loadVideo() {
     const video = document.getElementById("video");
@@ -151,8 +160,8 @@ export class camera{
   }
   
   /**
-   * 
-   * @param {*} instructorModel 
+   * Async function used to load PoseNet in the instructor file
+   * @param {*} instructorModel an instructor object 
    */
   async loadPosenet(instructorModel) {
     const net = await posenet.load({

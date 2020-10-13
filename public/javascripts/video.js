@@ -14,10 +14,15 @@ const defaultMobileNetMultiplier = 0.75; // lower for mobile
 const defaultMobileNetStride = 16;
 const defaultMobileNetInputResolution = 500;
 
-const defaultResNetMultiplier = 1.0;
-const defaultResNetStride = 32;
-const defaultResNetInputResolution = 250;
+// Constants needed for ResNet
+// const defaultResNetMultiplier = 1.0;
+// const defaultResNetStride = 32;
+// const defaultResNetInputResolution = 250;
 
+/**
+ * Mobilenet Model
+ * Faster, less accurate pose estimation library
+ */
 const model = {
   algorithm: 'multi-pose',
   input: {
@@ -46,6 +51,11 @@ const model = {
   net: null,
 };
 
+/**
+ * ResNet Model
+ * Not in use but if wanting a more accurate model then we recommend ResNet
+ * NOTE: ResNet also takes more time to compute
+ */
 // const model = {
 //   algorithm: 'multi-pose',
 //   input: {
@@ -74,6 +84,11 @@ const model = {
 //   net: null,
 // };
 
+/**
+ * Creates the post estimation model
+ * @param {*} instructor an instructor model
+ * @param {*} videoElement the video which the user model is based on
+ */
 function detectPoses(instructor, videoElement) {
   const canvas = document.getElementById('outputCamera');
   const ctx = canvas.getContext('2d');
@@ -155,10 +170,16 @@ function detectPoses(instructor, videoElement) {
   requestAnimationFrame(frameProcessing);
 }
 
-
+/**
+ * A video class to be exported for use in the instructor class
+ */
 export class video{
   constructor() { }
 
+  /**
+   * Loads a video element
+   * @param {*} instructorModel an instructor model
+   */
   async loadVideo(instructorModel) {
     const videoElement = document.getElementById("video");
     const videoControl = document.getElementById("control");
@@ -189,15 +210,11 @@ export class video{
   };
 }
 
-// Both return 0?
-// console.log(videoElement.width);
-// console.log(videoElement.height);
-
-// videoElement.onloadedmetadata = () => {
-//   console.log(videoElement.width);
-//   console.log(videoElement.height);
-// }
-
+/**
+ * Extracts the frame and draws the image
+ * @param {*} cvs the context of where the element came from
+ * @param {*} videoElement the video element where it is displayed
+ */
 function extractFrame(cvs, videoElement) {     
   // const cvs = document.createElement('canvas');
   const context = cvs.getContext('2d');

@@ -1,8 +1,12 @@
 import { Instructor } from "../instructor.js";
 import { camera } from "../camera.js"
+import { video } from "../video.js";
 
 /**
- * Model for an instructor with their arms stretched out wide and their legs in a natural standing position
+ * Model for an instructor with their arms stretched out wide
+ * and their legs in a natural standing position
+ * 
+ * Call the script using a module on the index.jade page
  */
 var instructorArmsOut = new Instructor(
   // confidence score of the model
@@ -112,9 +116,16 @@ var instructorArmsOut = new Instructor(
   }
 );
 
+/**
+ * Runs the model using the camera 
+ */
 function runModelOnCamera() {
   var cameraInstructor = new camera();
   cameraInstructor.loadPosenet(instructorArmsOut);
+
+  var videoAnalysis = new video();
+  videoAnalysis.loadVideo(instructorArmsOut);
 }
 
+// Written so that the script calls the function
 runModelOnCamera();

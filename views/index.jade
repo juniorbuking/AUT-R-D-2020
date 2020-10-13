@@ -4,18 +4,23 @@ block content
   h1= title
   p Welcome to #{title}
 
+  //- Canvas for the post estimation outputs
   canvas(id="outputCamera")
   canvas(id="outputImg")
 
+  //- The video footage from the webcam
   video(id="video", playsinline)
+
+  //- The div for the information if the camera is not working
   div(id="info")
 
+  //- Button to change between the different instructor models
   button(id="exampleButton") Change Instructor
 
-  script(src="/javascripts/camera.js", type="module")
+  //- Runs the scripts for the pose estimation
   script(id="armsOut",src="/javascripts/instructors/instructorArmsOut.js",type="module") 
   //- script(id="armsBySide",src="/javascripts/instructors/instructorArmsBySide.js", type="module") 
 
-  //- UNCOMMENT TO SHOW AN EXAMPLE IMAGE
+  //- Example way to create a model from an image - uncomment to use
   //- image(id="image", src="/images/ryan.jpg", type="image")
   //- script(src="/javascripts/image.js", type="module")

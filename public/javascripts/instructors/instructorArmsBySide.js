@@ -4,7 +4,10 @@ import { video } from "../video.js";
 //import { calculateSlope } from "../util.js"; **SEE BELOW FOR USE
 
 /**
- * Model for an instructor with their arms by their side and their legs in a natural standing position
+ * Model for an instructor with their arms by their side and
+ * their legs in a natural standing position.
+ * 
+ * Call the script using a module on the index.jade page
  */
 var instructorArmsOut = new Instructor(
     // confidence score of the model
@@ -115,7 +118,7 @@ var instructorArmsOut = new Instructor(
 );
 
 /**
- * 
+ * Runs the model using the camera
  */
 function runModelOnCamera() {
     var cameraInstructor = new camera();

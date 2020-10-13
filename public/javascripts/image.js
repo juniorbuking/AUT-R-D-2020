@@ -8,13 +8,15 @@ import {
 
 const defaultQuantBytes = 2;
 
+// Constants needed for MobileNet
 const defaultMobileNetMultiplier = 0.75; // lower for mobile
 const defaultMobileNetStride = 16;
 const defaultMobileNetInputResolution = 500;
 
+/* Constants needed for ResNet
 const defaultResNetMultiplier = 1.0;
 const defaultResNetStride = 32;
-const defaultResNetInputResolution = 250;
+const defaultResNetInputResolution = 250; */
 
 /**
  * Mobilenet Model
@@ -47,6 +49,7 @@ const model = {
 /**
  * ResNet Model
  * Not in use but if wanting a more accurate model then we recommend ResNet
+ * NOTE: ResNet also takes more time to compute
  */
 // const model = {
 //   algorithm: 'multi-pose',
@@ -76,11 +79,12 @@ const model = {
 //   net: null,
 // };
 
-//
+// The image which we will create the pose estimation model from
 const imageElement = document.getElementById("image");
 
 /**
- * 
+ * The posenet model which loads all the elements needed and
+ * creates and display the poses on the image
  */
 posenet
   .load({
@@ -131,11 +135,11 @@ posenet
   });
 
 /**
- * 
- * @param {*} canvas 
- * @param {*} poses 
+ * Draw the poses onto the canvas
+ * @param {*} canvas the canvas that the poses will be drawn on
+ * @param {*} poses the poses that will be drawn
  * @param {*} minPartConfidence 
- * @param {*} minPoseConfidence 
+ * @param {*} minPoseConfidence how confident PoseNet is of the pose being accurate
  */
 function drawResults(canvas, poses, minPartConfidence, minPoseConfidence) {
   const ctx = canvas.getContext("2d");
