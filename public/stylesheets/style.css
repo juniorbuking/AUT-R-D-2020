@@ -1,5 +1,7 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -14,8 +16,7 @@ canvas {
   /* border: 2px solid red; */
 }
 
-#image,
-#output {
+#image {
   width: 480px;
   height: 853px;
   margin: 15px;
@@ -27,10 +28,87 @@ canvas {
   /* WIDTH, HEIGHT NOT WORKING?? */
   /* width: 480px; */
   /* height: 853px; */
+  display: none;
   background-color: #666;
   /* border: 2px solid green; */
 }
 
+#phone {
+  position: relative;
+  margin: 30px auto;
+  width: 550px;
+  height: 1000px;
+  border-radius: 80px / 40px;
+  border-top: 3px solid #222;
+  background: #6d6d6b;
+  background: linear-gradient(
+    to right,
+    #6d6d6b 0%,
+    #3b3b3c 1%,
+    #979797 3%,
+    #686868 4%,
+    #2e2e2e 100%
+  );
+}
+
+#phone:before {
+  position: absolute;
+  content: "";
+  z-index: -1;
+  top: -10px;
+  left: 0px;
+  background: #babbbb;
+  width: 550px;
+  height: 78px;
+  border-radius: 80px / 40px;
+  border-top: 1px solid #444;
+}
+
+#phone:after {
+  position: absolute;
+  content: "";
+  z-index: -1;
+  bottom: -8px;
+  left: 0px;
+  background: #babbbb;
+  width: 550px;
+  height: 78px;
+  border-radius: 80px / 40px;
+  border-bottom: 2px solid #555;
+}
+
+#output {
+  display: none;
+  width: 480px;
+  height: 853px;
+  margin: 75px auto;
+  border-radius: 40px / 20px;
+}
+
+#message {
+  display: none;
+  font-size: 20px;
+  color: MidnightBlue;
+  text-align: center;
+  width: 480px;
+  height: max-content;
+  max-height: 100px;
+  position: absolute;
+  top: 120px;
+  left: 35px;
+  background-color: rgba(240, 128, 128, 0.4);
+  padding: 10px;
+  border-radius: 5px;
+}
+
 #info {
   display: none;
+  font-size: 20px;
+  text-align: center;
+  max-width: 500px;
+  height: max-content;
+  margin: 450px auto;
+  padding: 10px;
+  background: SeaShell;
+  border-radius: 5px;
 }
