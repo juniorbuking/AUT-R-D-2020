@@ -1,4 +1,4 @@
-const similiarity = require('compute-cosine-similarity');
+import { similarity } from "./bundle.js";
 
 let isInstructor = true;
 let colour = "aqua";
@@ -35,9 +35,6 @@ function calculateAngle(m1, m2) {
   return angle;
 }
 
-// Cosine similarity as a distance function. The lower the number, the closer // the match
-// poseVector1 and poseVector2 are a L2 normalized 34-float vectors (17 keypoints each  
-// with an x and y. 17 * 2 = 32)
 function cosineDistanceMatching(poseVector1, poseVector2) {
   let cosineSimilarity = similarity(poseVector1, poseVector2);
   let distance = 2 * (1 - cosineSimilarity);
@@ -122,12 +119,12 @@ export function drawSkeleton(instructor, keypoints, minConfidence, ctx, scale = 
           toTuple(keypoints[1].position)
         );*/
   
-        //const angle = cosineDistanceMatching(instructor.keypoints, keypoints);
-        const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
+        const angle = cosineDistanceMatching(instructor.keypoints, keypoints);
+        //const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
         
         //console.log(angle);
   
-        if (angle > 8) {
+        if (angle > 0.92) {
           setColour("Red");
         } else {
           setColour("LightGreen");

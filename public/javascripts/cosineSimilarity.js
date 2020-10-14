@@ -1,0 +1,1 @@
+const similarity = require('compute-cosine-similarity');
