@@ -1,4 +1,4 @@
-const similiarity = require('compute-cosine-similarity');
+// const similiarity = require('compute-cosine-similarity');
 
 let isInstructor = true;
 let colour = "aqua";
@@ -36,7 +36,7 @@ function calculateAngle(m1, m2) {
 }
 
 // Cosine similarity as a distance function. The lower the number, the closer // the match
-// poseVector1 and poseVector2 are a L2 normalized 34-float vectors (17 keypoints each  
+// poseVector1 and poseVector2 are a L2 normalized 34-float vectors (17 keypoints each
 // with an x and y. 17 * 2 = 32)
 function cosineDistanceMatching(poseVector1, poseVector2) {
   let cosineSimilarity = similarity(poseVector1, poseVector2);
@@ -101,18 +101,24 @@ export function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
  * @param {*} ctx context of the canvas
  * @param {*} scale scale of the model; always set to 1
  */
-export function drawSkeleton(instructor, keypoints, minConfidence, ctx, scale = 1) {
+export function drawSkeleton(
+  instructor,
+  keypoints,
+  minConfidence,
+  ctx,
+  scale = 1
+) {
   const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
     keypoints,
     minConfidence
   );
 
-    adjacentKeyPoints.forEach((keypoints) => {
-      if (isInstructor) {
-        setColour("Yellow");
-      } else {
-        //THIS IS A TEST - REMEMBER THIS CALLUM
-        /*
+  adjacentKeyPoints.forEach((keypoints) => {
+    if (isInstructor) {
+      setColour("Yellow");
+    } else {
+      //THIS IS A TEST - REMEMBER THIS CALLUM
+      /*
         const key1 = `${keypoints[0].part}_${keypoints[1].part}`;
         const key2 = `${keypoints[1].part}_${keypoints[0].part}`;
         const instructorSlope =
@@ -121,27 +127,27 @@ export function drawSkeleton(instructor, keypoints, minConfidence, ctx, scale = 
           toTuple(keypoints[0].position),
           toTuple(keypoints[1].position)
         );*/
-  
-        //const angle = cosineDistanceMatching(instructor.keypoints, keypoints);
-        const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
-        
-        //console.log(angle);
-  
-        if (angle > 8) {
-          setColour("Red");
-        } else {
-          setColour("LightGreen");
-        }
+
+      //const angle = cosineDistanceMatching(instructor.keypoints, keypoints);
+      const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
+
+      //console.log(angle);
+
+      if (angle > 8) {
+        setColour("Red");
+      } else {
+        setColour("LightGreen");
       }
-  
-      drawSegment(
-        toTuple(keypoints[0].position),
-        toTuple(keypoints[1].position),
-        colour,
-        scale,
-        ctx
-      );
-    });
+    }
+
+    drawSegment(
+      toTuple(keypoints[0].position),
+      toTuple(keypoints[1].position),
+      colour,
+      scale,
+      ctx
+    );
+  });
 }
 
 /**
