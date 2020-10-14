@@ -18,6 +18,9 @@ block content
   //- Button to change between the different instructor models
   button(id="exampleButton") Change Instructor
 
+  //- Run the Browserify script
+  script(src="/javascripts/bundle.js", type="module")
+
   //- Runs the scripts for the pose estimation
   //-script(id="armsOut",src="/javascripts/instructors/instructorArmsOut.js",type="module") 
   script(id="armsBySide",src="/javascripts/instructors/instructorArmsBySide.js", type="module") 

@@ -1,5 +1,3 @@
-const similiarity = require('compute-cosine-similarity');
-
 let isInstructor = true;
 let colour = "aqua";
 const boundingBoxColor = "red";
@@ -36,7 +34,7 @@ function calculateAngle(m1, m2) {
 }
 
 // Cosine similarity as a distance function. The lower the number, the closer // the match
-// poseVector1 and poseVector2 are a L2 normalized 34-float vectors (17 keypoints each  
+// poseVector1 and poseVector2 are a L2 normalized 34-float vectors (17 keypoints each
 // with an x and y. 17 * 2 = 32)
 function cosineDistanceMatching(poseVector1, poseVector2) {
   let cosineSimilarity = similarity(poseVector1, poseVector2);
@@ -58,6 +56,18 @@ function toTuple({ y, x }) {
  */
 export function toggleInstructor(t) {
   isInstructor = t;
+}
+
+/**
+  * Gets the keypoints from the adjacent keypoints and turns it into 
+  * an array so we can calculate vectors
+  * @param {*} keypoint keypoint to be changed to vector
+  */
+function keypointsToArray(keypoint) {
+  var pos1 = keypoint[0].position;
+  var pos2 = keypoint[1].position;
+
+  return [pos1.x, pos1.y, pos2.x, pos2.y];
 }
 
 /**
@@ -101,47 +111,46 @@ export function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
  * @param {*} ctx context of the canvas
  * @param {*} scale scale of the model; always set to 1
  */
-export function drawSkeleton(instructor, keypoints, minConfidence, ctx, scale = 1) {
+export function drawSkeleton(
+  instructor,
+  keypoints,
+  minConfidence,
+  ctx,
+  scale = 1
+) {
   const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
     keypoints,
     minConfidence
   );
 
-    adjacentKeyPoints.forEach((keypoints) => {
-      if (isInstructor) {
-        setColour("Yellow");
+  adjacentKeyPoints.forEach((keypoints) => {
+    if (isInstructor) {
+      setColour("Yellow");
+    } else {
+      const key = `${keypoints[0].part}_${keypoints[1].part}`;
+
+      const instructorKeypoint = instructor.getKeypointByName(key);
+      const userKeypoint = keypointsToArray(keypoints);
+    
+      const distance = cosineDistanceMatching(instructorKeypoint, userKeypoint);
+      console.log(distance);
+
+      // If the cosine is greater than 0.925 then it is deemed accurate
+      if (distance < 0.15) {
+       setColour("Red");
       } else {
-        //THIS IS A TEST - REMEMBER THIS CALLUM
-        /*
-        const key1 = `${keypoints[0].part}_${keypoints[1].part}`;
-        const key2 = `${keypoints[1].part}_${keypoints[0].part}`;
-        const instructorSlope =
-          instructor.slope[key1] || instructor.slope[key2];
-        const studentSlope = calculateSlope(
-          toTuple(keypoints[0].position),
-          toTuple(keypoints[1].position)
-        );*/
-  
-        //const angle = cosineDistanceMatching(instructor.keypoints, keypoints);
-        const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
-        
-        //console.log(angle);
-  
-        if (angle > 8) {
-          setColour("Red");
-        } else {
-          setColour("LightGreen");
-        }
+        setColour("LightGreen");
       }
-  
-      drawSegment(
-        toTuple(keypoints[0].position),
-        toTuple(keypoints[1].position),
-        colour,
-        scale,
-        ctx
-      );
-    });
+    }
+
+    drawSegment(
+      toTuple(keypoints[0].position),
+      toTuple(keypoints[1].position),
+      colour,
+      scale,
+      ctx
+    );
+  });
 }
 
 /**
