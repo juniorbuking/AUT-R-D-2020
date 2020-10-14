@@ -1,5 +1,3 @@
-// const similiarity = require('compute-cosine-similarity');
-
 let isInstructor = true;
 let colour = "aqua";
 const boundingBoxColor = "red";
@@ -61,6 +59,18 @@ export function toggleInstructor(t) {
 }
 
 /**
+  * Gets the keypoints from the adjacent keypoints and turns it into 
+  * an array so we can calculate vectors
+  * @param {*} keypoint keypoint to be changed to vector
+  */
+function keypointsToArray(keypoint) {
+  var pos1 = keypoint[0].position;
+  var pos2 = keypoint[1].position;
+
+  return [pos1.x, pos1.y, pos2.x, pos2.y];
+}
+
+/**
  * Draws a keypoint onto a canvas
  * @param {*} ctx context of the canvas
  * @param {*} y y coordinate of the point
@@ -117,24 +127,17 @@ export function drawSkeleton(
     if (isInstructor) {
       setColour("Yellow");
     } else {
-      //THIS IS A TEST - REMEMBER THIS CALLUM
-      /*
-        const key1 = `${keypoints[0].part}_${keypoints[1].part}`;
-        const key2 = `${keypoints[1].part}_${keypoints[0].part}`;
-        const instructorSlope =
-          instructor.slope[key1] || instructor.slope[key2];
-        const studentSlope = calculateSlope(
-          toTuple(keypoints[0].position),
-          toTuple(keypoints[1].position)
-        );*/
+      const key = `${keypoints[0].part}_${keypoints[1].part}`;
 
-      //const angle = cosineDistanceMatching(instructor.keypoints, keypoints);
-      const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
+      const instructorKeypoint = instructor.getKeypointByName(key);
+      const userKeypoint = keypointsToArray(keypoints);
+    
+      const distance = cosineDistanceMatching(instructorKeypoint, userKeypoint);
+      console.log(distance);
 
-      //console.log(angle);
-
-      if (angle > 8) {
-        setColour("Red");
+      // If the cosine is greater than 0.925 then it is deemed accurate
+      if (distance < 0.15) {
+       setColour("Red");
       } else {
         setColour("LightGreen");
       }
