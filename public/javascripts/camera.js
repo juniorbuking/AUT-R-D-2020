@@ -1,8 +1,8 @@
 import { drawInstructor, renderImageToCanvas, drawStudent } from "./util.js";
 import { instructor } from "./instructor.js";
 
-// const videoWidth = 500;
-// const videoHeight = 500;
+const videoWidth = 600;
+const videoHeight = 500;
 const outputWidth = 480;
 const outputHeight = 853;
 
@@ -87,7 +87,8 @@ function detectPoses(video, instructorCanvas) {
           minPoseConfidence,
           model.output.showKeyPoints,
           model.output.showSkeleton,
-          model.output.showBoundingBox
+          model.output.showBoundingBox,
+          [outputWidth / videoWidth, outputHeight / videoHeight]
         );
 
         requestAnimationFrame(frameProcessing);
@@ -99,8 +100,8 @@ function detectPoses(video, instructorCanvas) {
 
 function loadVideo() {
   const video = document.getElementById("video");
-  video.width = outputWidth;
-  video.height = outputHeight;
+  video.width = videoWidth;
+  video.height = videoHeight;
 
   return Promise.resolve(
     // Not adding `{ audio: true }` since we only want video now
@@ -127,13 +128,13 @@ function loadVideo() {
 }
 
 (async () => {
-  const scale = 3.5;
+  const scale = 1 / 3.5;
   const pose = 2;
   const instructorCanvas = drawInstructor(
     instructor[pose].keypoints,
     model.multiPoseDetection.minPartConfidence,
-    [outputWidth / scale, outputHeight / scale],
-    1 / scale
+    [outputWidth * scale, outputHeight * scale], // size of canvas
+    [scale, scale]
   );
 
   const net = await posenet.load({

@@ -41,10 +41,16 @@ export function drawPoint(ctx, y, x, r, color) {
 /**
  * Draws a line on a canvas, i.e. a joint
  */
-export function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
+export function drawSegment(
+  [ay, ax],
+  [by, bx],
+  color,
+  [scaleX = 1, scaleY = 1],
+  ctx
+) {
   ctx.beginPath();
-  ctx.moveTo(ax * scale, ay * scale);
-  ctx.lineTo(bx * scale, by * scale);
+  ctx.moveTo(ax * scaleX, ay * scaleY);
+  ctx.lineTo(bx * scaleX, by * scaleY);
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = color;
   ctx.lineCap = lineCap;
@@ -54,7 +60,7 @@ export function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
 /**
  * Draws a pose skeleton by looking up all adjacent keypoints/joints
  */
-export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
+export function drawSkeleton(keypoints, minConfidence, ctx, scale) {
   const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
     keypoints,
     minConfidence
@@ -109,7 +115,12 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
 /**
  * Draw pose keypoints onto a canvas
  */
-export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
+export function drawKeypoints(
+  keypoints,
+  minConfidence,
+  ctx,
+  [scaleX = 1, scaleY = 1]
+) {
   for (let i = 0; i < keypoints.length; i++) {
     const keypoint = keypoints[i];
 
@@ -131,7 +142,7 @@ export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
     }
 
     const { y, x } = keypoint.position;
-    drawPoint(ctx, y * scale, x * scale, 6, colour);
+    drawPoint(ctx, y * scaleY, x * scaleX, 6, colour);
   }
 }
 
@@ -170,8 +181,8 @@ export function renderImageToCanvas(image, canvas, [x, y], [width, height]) {
 export function drawInstructor(
   keypoints,
   minConfidence,
-  [width, height],
-  scale = 1
+  [width, height], // size of canvas
+  scale = [1, 1] // [scaleX, scaleY]
 ) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -198,7 +209,8 @@ export function drawStudent(
   minPoseConfidence,
   showKeypoint,
   showSkeleton,
-  showBoundingBox
+  showBoundingBox,
+  scale = [1, 1] // [scaleX, scaleY]
 ) {
   const ctx = canvas.getContext("2d");
 
@@ -213,12 +225,12 @@ export function drawStudent(
       } else {
         if (showKeypoint) {
           // console.log("drawkeypoints");
-          drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+          drawKeypoints(pose.keypoints, minPartConfidence, ctx, scale);
         }
 
         if (showSkeleton) {
           // console.log("drawskeleton");
-          drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+          drawSkeleton(pose.keypoints, minPartConfidence, ctx, scale);
         }
 
         if (showBoundingBox) {
