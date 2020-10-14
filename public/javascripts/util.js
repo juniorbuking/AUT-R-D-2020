@@ -86,11 +86,11 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale) {
       const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
       // console.log(key1, angle);
 
-      if (angle > 10) {
+      if (angle > 12) {
         setColour("OrangeRed");
         totalIncorrect++;
       } else {
-        setColour("Yellow");
+        setColour("Chartreuse");
       }
     }
 
@@ -243,7 +243,7 @@ export function drawStudent(
 }
 
 function findPoints(keypoints) {
-  return keypoints.some((el) => el.score <= 0.02);
+  return keypoints.some((el) => el.score <= 0.005);
 }
 
 function drawText(text) {
