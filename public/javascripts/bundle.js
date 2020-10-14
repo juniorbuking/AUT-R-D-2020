@@ -1,16 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const similarity = require("compute-cosine-similarity");
 
-const x = [5, 23, 2, 5, 9],
-  y = [3, 21, 2, 5, 14];
-
-const s = similarity(x, y);
-
-console.log(s);
-
-const p = document.getElementById("browserify-test");
-p.innerText = s;
-
 },{"compute-cosine-similarity":2}],2:[function(require,module,exports){
 'use strict';
 
@@ -86,6 +76,8 @@ function similarity( x, y, clbk ) {
 // EXPORTS //
 
 module.exports = similarity;
+window.similarity = similarity;
+
 
 },{"compute-dot":3,"compute-l2norm":4,"validate.io-array":5,"validate.io-function":6}],3:[function(require,module,exports){
 'use strict';
