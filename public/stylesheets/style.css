@@ -36,7 +36,7 @@ canvas {
 #phone {
   position: relative;
   margin: 30px auto;
-  width: 550px;
+  width: 490px;
   height: 1000px;
   border-radius: 80px / 40px;
   border-top: 3px solid #222;
@@ -58,7 +58,7 @@ canvas {
   top: -10px;
   left: 0px;
   background: #babbbb;
-  width: 550px;
+  width: 490px;
   height: 78px;
   border-radius: 80px / 40px;
   border-top: 1px solid #444;
@@ -71,7 +71,7 @@ canvas {
   bottom: -8px;
   left: 0px;
   background: #babbbb;
-  width: 550px;
+  width: 490px;
   height: 78px;
   border-radius: 80px / 40px;
   border-bottom: 2px solid #555;
@@ -82,7 +82,8 @@ canvas {
   width: 480px;
   height: 853px;
   margin: 75px auto;
-  border-radius: 40px / 20px;
+  border-radius: 5px;
+  border: 2px solid #6d6d6b;
 }
 
 #message {
@@ -90,12 +91,12 @@ canvas {
   font-size: 20px;
   color: MidnightBlue;
   text-align: center;
-  width: 480px;
+  width: 475px;
   height: max-content;
   max-height: 100px;
   position: absolute;
   top: 120px;
-  left: 35px;
+  left: 7.5px;
   background-color: rgba(240, 128, 128, 0.4);
   padding: 10px;
   border-radius: 5px;
@@ -105,9 +106,10 @@ canvas {
   display: none;
   font-size: 20px;
   text-align: center;
-  max-width: 500px;
-  height: max-content;
-  margin: 450px auto;
+  align-items: center;
+  max-width: 480px;
+  height: 853px;
+  margin: 75px auto;
   padding: 10px;
   background: SeaShell;
   border-radius: 5px;

@@ -1,8 +1,10 @@
 import { drawInstructor, renderImageToCanvas, drawStudent } from "./util.js";
 import { instructor } from "./instructor.js";
 
-const videoWidth = 480;
-const videoHeight = 853;
+// const videoWidth = 500;
+// const videoHeight = 500;
+const outputWidth = 480;
+const outputHeight = 853;
 
 const defaultQuantBytes = 2;
 
@@ -41,8 +43,8 @@ const model = {
 function detectPoses(video, instructorCanvas) {
   const canvas = document.getElementById("output");
   const ctx = canvas.getContext("2d");
-  canvas.width = videoWidth;
-  canvas.height = videoHeight;
+  canvas.width = outputWidth;
+  canvas.height = outputHeight;
   canvas.style.display = "block";
 
   function frameProcessing() {
@@ -57,13 +59,13 @@ function detectPoses(video, instructorCanvas) {
         const minPoseConfidence = +model.multiPoseDetection.minPoseConfidence;
         const minPartConfidence = +model.multiPoseDetection.minPartConfidence;
 
-        ctx.clearRect(0, 0, videoWidth, videoHeight);
+        ctx.clearRect(0, 0, outputWidth, outputHeight);
 
         if (model.output.showVideo) {
           ctx.save();
           ctx.scale(-1, 1);
-          ctx.translate(-videoWidth, 0);
-          ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+          ctx.translate(-outputWidth, 0);
+          ctx.drawImage(video, 0, 0, outputWidth, outputHeight);
           ctx.restore();
         }
 
@@ -97,8 +99,8 @@ function detectPoses(video, instructorCanvas) {
 
 function loadVideo() {
   const video = document.getElementById("video");
-  video.width = videoWidth;
-  video.height = videoHeight;
+  video.width = outputWidth;
+  video.height = outputHeight;
 
   return Promise.resolve(
     // Not adding `{ audio: true }` since we only want video now
@@ -130,7 +132,7 @@ function loadVideo() {
   const instructorCanvas = drawInstructor(
     instructor[pose].keypoints,
     model.multiPoseDetection.minPartConfidence,
-    [videoWidth / scale, videoHeight / scale],
+    [outputWidth / scale, outputHeight / scale],
     1 / scale
   );
 
@@ -153,6 +155,6 @@ function loadVideo() {
       const info = document.getElementById("info");
       info.textContent =
         "Require permission to use the camera or camera is not supported on this device.";
-      info.style.display = "block";
+      info.style.display = "flex";
     });
 })();

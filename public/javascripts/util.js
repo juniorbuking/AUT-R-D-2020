@@ -63,6 +63,7 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
   //   console.log("adjacent", adjacentKeyPoints);
   //   console.log("keypoint", keypoints);
 
+  let totalIncorrect = 0;
   adjacentKeyPoints.forEach((keypoints) => {
     if (isInstructor) {
       setColour("LightGreen");
@@ -81,6 +82,7 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
 
       if (angle > 10) {
         setColour("OrangeRed");
+        totalIncorrect++;
       } else {
         setColour("Yellow");
       }
@@ -94,6 +96,14 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       ctx
     );
   });
+
+  if (!isInstructor) {
+    if (totalIncorrect === 0) {
+      drawText("&#10003;"); // tick
+    } else {
+      drawText("&#10060;"); // cross
+    }
+  }
 }
 
 /**
@@ -198,8 +208,7 @@ export function drawStudent(
     if (pose.score >= minPoseConfidence) {
       if (findPoints(pose.keypoints)) {
         drawText(
-          "Position the camera or move backwards until the camera covers the whole body.",
-          ctx
+          "Position the camera or move backwards until the camera covers the whole body."
         );
       } else {
         if (showKeypoint) {
@@ -225,22 +234,8 @@ function findPoints(keypoints) {
   return keypoints.some((el) => el.score <= 0.02);
 }
 
-function drawText(text, ctxx) {
-  // const canvas = document.createElement("canvas");
-  // canvas.width = 440;
-  // canvas.height = 80;
-
-  // const ctx = canvas.getContext("2d");
-  // ctx.fillStyle = "rgba(240, 128, 128, 0.4)";
-  // ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // setColour("MidnightBlue");
-  // ctx.fillStyle = colour;
-  // ctx.font = "30px Lucida Grande";
-  // ctx.fillText(text, 10, 40);
-
-  // ctxx.drawImage(canvas, 20, 40);
+function drawText(text) {
   const message = document.getElementById("message");
-  message.innerText = text;
+  message.innerHTML = text;
   message.style.display = "block";
 }
