@@ -16,6 +16,10 @@ video, canvas {
   /* border: 2px solid red; */
 }
 
+#header {
+  border: 5cm;
+}
+
 #image, #output {
   /* width: 384px; */
   /* height: 512px; */

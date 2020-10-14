@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  image(id="header", src="/images/LMxAUT_long.png")
   h1= title
   p Welcome to #{title}
 
@@ -18,8 +19,8 @@ block content
   button(id="exampleButton") Change Instructor
 
   //- Runs the scripts for the pose estimation
-  script(id="armsOut",src="/javascripts/instructors/instructorArmsOut.js",type="module") 
-  //- script(id="armsBySide",src="/javascripts/instructors/instructorArmsBySide.js", type="module") 
+  //-script(id="armsOut",src="/javascripts/instructors/instructorArmsOut.js",type="module") 
+  script(id="armsBySide",src="/javascripts/instructors/instructorArmsBySide.js", type="module") 
 
   //- Example way to create a model from an image - uncomment to use
   //- image(id="image", src="/images/ryan.jpg", type="image")
