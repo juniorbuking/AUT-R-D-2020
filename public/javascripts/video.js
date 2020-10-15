@@ -1,7 +1,12 @@
-import { drawBoundingBox, drawKeypoints, drawSkeleton } from "./util.js";
+import { 
+  drawBoundingBox, 
+  drawKeypoints, 
+  drawSkeleton,
+  toggleInstructor
+} from "./util.js";
 
-// const videoWidth = 600;
-// const videoHeight = 500;
+const videoWidth = 600;
+const videoHeight = 500;
 
 const defaultQuantBytes = 2;
 
@@ -9,10 +14,15 @@ const defaultMobileNetMultiplier = 0.75; // lower for mobile
 const defaultMobileNetStride = 16;
 const defaultMobileNetInputResolution = 500;
 
-const defaultResNetMultiplier = 1.0;
-const defaultResNetStride = 32;
-const defaultResNetInputResolution = 250;
+// Constants needed for ResNet
+// const defaultResNetMultiplier = 1.0;
+// const defaultResNetStride = 32;
+// const defaultResNetInputResolution = 250;
 
+/**
+ * Mobilenet Model
+ * Faster, less accurate pose estimation library
+ */
 const model = {
   algorithm: 'multi-pose',
   input: {
@@ -41,6 +51,11 @@ const model = {
   net: null,
 };
 
+/**
+ * ResNet Model
+ * Not in use but if wanting a more accurate model then we recommend ResNet
+ * NOTE: ResNet also takes more time to compute
+ */
 // const model = {
 //   algorithm: 'multi-pose',
 //   input: {
@@ -69,8 +84,13 @@ const model = {
 //   net: null,
 // };
 
-function detectPoses() {
-  const canvas = document.getElementById('output');
+/**
+ * Creates the post estimation model
+ * @param {*} instructor an instructor model
+ * @param {*} videoElement the video which the user model is based on
+ */
+function detectPoses(instructor, videoElement) {
+  const canvas = document.getElementById('outputCamera');
   const ctx = canvas.getContext('2d');
   canvas.width = videoWidth;
   canvas.height = videoHeight;
@@ -81,7 +101,7 @@ function detectPoses() {
   poseCanvas.height = videoHeight;
 
   function frameProcessing() {
-    const video = extractFrame(poseCanvas);
+    const video = extractFrame(poseCanvas, videoElement);
 
     model.net.estimateMultiplePoses(video, {
       flipHorizontal: false,
@@ -105,6 +125,21 @@ function detectPoses() {
 
       // console.log(multiPoses);
 
+      // draw instructor
+      toggleInstructor(true);
+      if (instructor.score >= minPoseConfidence) {
+        if (model.output.showSkeleton) {
+          drawSkeleton(
+            instructor,
+            instructor.keypoints,
+            model.multiPoseDetection.minPartConfidence,
+            ctx
+          );
+        }
+      }
+
+      // draw student
+      toggleInstructor(false);
       multiPoses.forEach(({score, keypoints}) => {
         if (score >= minPoseConfidence) {
           if (model.output.showKeyPoints) {
@@ -114,7 +149,7 @@ function detectPoses() {
   
           if (model.output.showSkeleton) {
             // console.log("drawskeleton");
-            drawSkeleton(keypoints, minPartConfidence, ctx);
+            drawSkeleton(instructor, keypoints, minPartConfidence, ctx);
           }
   
           if (model.output.showBoundingBox) {
@@ -124,7 +159,7 @@ function detectPoses() {
         }
       });
   
-      videoID = requestAnimationFrame(frameProcessing);
+      var videoID = requestAnimationFrame(frameProcessing);
   
       if (videoElement.paused) {
         cancelAnimationFrame(videoID);
@@ -135,49 +170,59 @@ function detectPoses() {
   requestAnimationFrame(frameProcessing);
 }
 
-var videoID;
-const videoElement = document.getElementById("video");
-const videoControl = document.getElementById("control");
-const videoWidth = videoElement.width || 640;
-const videoHeight = videoElement.height || 360;
+/**
+ * A video class to be exported for use in the instructor class
+ */
+export class video{
+  constructor() { }
 
-
-videoControl.onclick = async () => {
+  /**
+   * Loads a video element
+   * @param {*} instructorModel an instructor model
+   */
+  async loadVideo(instructorModel) {
+    const videoElement = document.getElementById("video");
+    const videoControl = document.getElementById("control");
+    const videoWidth = videoElement.width || 640;
+    const videoHeight = videoElement.height || 360;
   
-  if (videoElement.paused) {
-    const net = await posenet.load({
-      architecture: model.input.architecture,
-      outputStride: model.input.outputStride,
-      inputResolution: model.input.inputResolution,
-      multiplier: model.input.multiplier,
-      quantBytes: model.input.quantBytes
-    });
-    model.net = net;
-    videoElement.play();
-    detectPoses();
-  }
-  else {
-    videoElement.pause();
-  }
+    if (videoElement.paused) {
+      const net = await posenet.load({
+        architecture: model.input.architecture,
+        outputStride: model.input.outputStride,
+        inputResolution: model.input.inputResolution,
+        multiplier: model.input.multiplier,
+        quantBytes: model.input.quantBytes
+      });
+      model.net = net;
+
+      // So that an error does not show due to Google Autoplay Policies
+      var promise = videoElement.play();
+      if (promise !== undefined) {
+        promise.then(_ => { }).catch(error => { });
+      }
+
+      detectPoses(instructorModel, videoElement);
+    }
+    else {
+      videoElement.pause();
+    }
+  };
 }
 
-// Both return 0?
-// console.log(videoElement.width);
-// console.log(videoElement.height);
-
-// videoElement.onloadedmetadata = () => {
-//   console.log(videoElement.width);
-//   console.log(videoElement.height);
-// }
-
-function extractFrame(cvs) {     
+/**
+ * Extracts the frame and draws the image
+ * @param {*} cvs the context of where the element came from
+ * @param {*} videoElement the video element where it is displayed
+ */
+function extractFrame(cvs, videoElement) {     
   // const cvs = document.createElement('canvas');
   const context = cvs.getContext('2d');
 
   // context.clearRect(0, 0, videoWidth, videoHeight);
   // context.save();
-  // context.scale(-1, 1);
-  // context.translate(-videoWidth, 0);
+  //context.scale(-1, 1);
+  //context.translate(w, 0);
   context.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
   // context.restore();
 

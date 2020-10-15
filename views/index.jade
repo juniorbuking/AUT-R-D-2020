@@ -1,20 +1,28 @@
 extends layout
 
 block content
+  image(id="header", src="/images/LMxAUT_long.png")
   h1= title
   p Welcome to #{title}
-  //- img(src="/images/table-tennis.jpg", id="image")
-  //- canvas(id="output")
-  //- script(src="/javascripts/image.js", type="module")
 
-  //- video(id="video", src="/videos/climate-talks.mp4")
-  //-   //- source(src="/videos/climate-talks.mp4", type="video/mp4")
-  //- button(id="control") Play/Pause
-  //- canvas(id="output")
-  //- script(src="/javascripts/video.js", type="module")
-
+  //- Canvas for the post estimation outputs
   video(id="video", playsinline)
-  canvas(id="output")
-  div(id="info")
-  script(src="/javascripts/camera.js", type="module")
+  div(id="phone")
+    canvas(id="outputCamera")
+    canvas(id="outputImg")
+    div(id="message")
+    div(id="info")
 
+  //- The div for the information if the camera is not working
+  div(id="info")
+
+  //- Run the Browserify script
+  script(src="/javascripts/bundle.js", type="module")
+
+  //- Runs the scripts for the pose estimation
+  script(id="armsOut",src="/javascripts/instructors/instructorArmsOut.js",type="module") 
+  //-script(id="armsBySide",src="/javascripts/instructors/instructorArmsBySide.js", type="module") 
+
+  //- Example way to create a model from an image - uncomment to use
+  //- image(id="image", src="/images/ryan.jpg", type="image")
+  //- script(src="/javascripts/image.js", type="module")

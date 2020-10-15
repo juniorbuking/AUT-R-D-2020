@@ -10,7 +10,14 @@ body {
 video, canvas {
   display: block;
   margin: 15px;
+  transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
   /* border: 2px solid red; */
+}
+
+#header {
+  border: 5cm;
 }
 
 #image, #output {
@@ -28,9 +35,59 @@ video, canvas {
   /* width: 600; */
   /* height: 500; */
   background-color: #666;
+  display:none !important;
+  transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* For Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* For Firefox */
   /* border: 2px solid green; */
-}
+} 
 
 #info {
   display: none;
+}
+
+
+/*maybe*/
+#phone {
+  position: relative;
+  margin: 30px auto;
+  width: 490px;
+  height: 1000px;
+  border-radius: 80px / 40px;
+  border-top: 3px solid #222;
+  background: #6d6d6b;
+  background: linear-gradient(
+    to right,
+    #6d6d6b 0%,
+    #3b3b3c 1%,
+    #979797 3%,
+    #686868 4%,
+    #2e2e2e 100%
+  );
+}
+
+#phone:before {
+  position: absolute;
+  content: "";
+  z-index: -1;
+  top: -10px;
+  left: 0px;
+  background: #babbbb;
+  width: 490px;
+  height: 78px;
+  border-radius: 80px / 40px;
+  border-top: 1px solid #444;
+}
+
+#phone:after {
+  position: absolute;
+  content: "";
+  z-index: -1;
+  bottom: -8px;
+  left: 0px;
+  background: #babbbb;
+  width: 490px;
+  height: 78px;
+  border-radius: 80px / 40px;
+  border-bottom: 2px solid #555;
 }
