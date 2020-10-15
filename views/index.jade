@@ -6,12 +6,9 @@ block content
   p Welcome to #{title}
 
   //- Canvas for the post estimation outputs
+  canvas(id="outputCamera")
+  canvas(id="outputImg")
   video(id="video", playsinline)
-  div(id="phone")
-    canvas(id="outputCamera")
-    canvas(id="outputImg")
-    div(id="message")
-    div(id="info")
 
   //- The div for the information if the camera is not working
   div(id="info")

@@ -123,10 +123,35 @@ export function drawSkeleton(
     minConfidence
   );
 
+  
   adjacentKeyPoints.forEach((keypoints) => {
     if (isInstructor) {
       setColour("Yellow");
     } else {
+
+      const key1 = `${keypoints[0].part}_${keypoints[1].part}`;
+      const key2 = `${keypoints[1].part}_${keypoints[0].part}`;
+      const instructorSlope =
+        instructor.slope[key1] || instructor.slope[key2];
+      const studentSlope = calculateSlope(
+        toTuple(keypoints[0].position),
+        toTuple(keypoints[1].position)
+      );
+
+      const angle = Math.floor(calculateAngle(instructorSlope, studentSlope));
+
+      if (angle > 10) {
+        setColour("Red");
+      } else {
+        setColour("LightGreen");
+      }
+    }
+
+    // INFORMATION - the code below is us attempting to use vectors
+    // rather than angles to improve the accuracy. However, at present 
+    // due it giving back false positives we have decided not to use it
+    // at present
+    /*
       const key = `${keypoints[0].part}_${keypoints[1].part}`;
 
       const instructorKeypoint = instructor.getKeypointByName(key);
@@ -141,7 +166,7 @@ export function drawSkeleton(
       } else {
         setColour("LightGreen");
       }
-    }
+    }*/
 
     drawSegment(
       toTuple(keypoints[0].position),
