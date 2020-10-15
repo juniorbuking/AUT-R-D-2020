@@ -6,24 +6,22 @@ block content
   p Welcome to #{title}
 
   //- Canvas for the post estimation outputs
-  canvas(id="outputCamera")
-  canvas(id="outputImg")
-
-  //- The video footage from the webcam
   video(id="video", playsinline)
+  div(id="phone")
+    canvas(id="outputCamera")
+    canvas(id="outputImg")
+    div(id="message")
+    div(id="info")
 
   //- The div for the information if the camera is not working
   div(id="info")
-
-  //- Button to change between the different instructor models
-  button(id="exampleButton") Change Instructor
 
   //- Run the Browserify script
   script(src="/javascripts/bundle.js", type="module")
 
   //- Runs the scripts for the pose estimation
-  //-script(id="armsOut",src="/javascripts/instructors/instructorArmsOut.js",type="module") 
-  script(id="armsBySide",src="/javascripts/instructors/instructorArmsBySide.js", type="module") 
+  script(id="armsOut",src="/javascripts/instructors/instructorArmsOut.js",type="module") 
+  //-script(id="armsBySide",src="/javascripts/instructors/instructorArmsBySide.js", type="module") 
 
   //- Example way to create a model from an image - uncomment to use
   //- image(id="image", src="/images/ryan.jpg", type="image")
