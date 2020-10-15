@@ -1,4 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const similarity = require("compute-cosine-similarity");
+
+},{"compute-cosine-similarity":2}],2:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -73,8 +76,10 @@ function similarity( x, y, clbk ) {
 // EXPORTS //
 
 module.exports = similarity;
+window.similarity = similarity;
 
-},{"compute-dot":2,"compute-l2norm":3,"validate.io-array":4,"validate.io-function":5}],2:[function(require,module,exports){
+
+},{"compute-dot":3,"compute-l2norm":4,"validate.io-array":5,"validate.io-function":6}],3:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -133,7 +138,7 @@ function dot( x, y, clbk ) {
 
 module.exports = dot;
 
-},{"validate.io-array":4,"validate.io-function":5}],3:[function(require,module,exports){
+},{"validate.io-array":5,"validate.io-function":6}],4:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -211,7 +216,7 @@ function l2norm( arr, clbk ) {
 
 module.exports = l2norm;
 
-},{"validate.io-array":4,"validate.io-function":5}],4:[function(require,module,exports){
+},{"validate.io-array":5,"validate.io-function":6}],5:[function(require,module,exports){
 'use strict';
 
 /**
@@ -229,7 +234,7 @@ function isArray( value ) {
 
 module.exports = Array.isArray || isArray;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
 *
 *	VALIDATE: function
@@ -276,6 +281,4 @@ function isFunction( value ) {
 
 module.exports = isFunction;
 
-},{}],6:[function(require,module,exports){
-const similarity = require('compute-cosine-similarity');
-},{"compute-cosine-similarity":1}]},{},[6]);
+},{}]},{},[1]);
