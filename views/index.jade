@@ -3,12 +3,23 @@ extends layout
 block content
   image(id="header", src="/images/LMxAUT_long.png")
   h1= title
-  p Welcome to #{title}
+  p Welcome to the #{title}
 
   //- Canvas for the post estimation outputs
-  canvas(id="outputCamera")
-  canvas(id="outputImg")
-  video(id="video", playsinline)
+  div(class="wrapper")
+    canvas(id="outputCamera")
+    canvas(id="outputImg")
+    video(id="video", playsinline)
+    p(style='white-space:pre;') 
+      | #{instructTitle}
+      | #{instruct1} 
+      | #{instruct2} 
+      | #{instruct3}
+    p(style='white-space:pre;') 
+      | #{keyTitle} 
+      | #{key1} 
+      | #{key2} 
+      | #{key3}
 
   //- The div for the information if the camera is not working
   div(id="info")
