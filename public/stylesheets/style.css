@@ -7,6 +7,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+p {
+  font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
 video, canvas {
   display: block;
   margin: 15px;
@@ -45,5 +49,4 @@ video, canvas {
 #info {
   display: none;
 }
-
 
